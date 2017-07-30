@@ -7,7 +7,13 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"time"
+
+	"github.com/k0kubun/pp"
+	"github.com/mmcdole/gofeed"
 )
+
+var feeds []*url.URL
 
 func main() {
 	usr, err := user.Current()
@@ -15,7 +21,6 @@ func main() {
 	file, err := os.Open(filepath.Join(usr.HomeDir, ".config/feeds"))
 	dieMsgIf(err, "no configuration found (~/.config/feeds)")
 
-	var feeds []*url.URL
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		uri, err := url.Parse(scanner.Text())
@@ -24,7 +29,9 @@ func main() {
 	}
 	die(scanner.Err())
 
-	fmt.Println(feeds)
+	for {
+		update()
+	}
 }
 
 func die(err error) {
@@ -42,4 +49,15 @@ func dieMsgIf(err error, format string, args ...interface{}) {
 	if err != nil {
 		dieMsg(format, args...)
 	}
+}
+
+func update() {
+	for _, uri := range feeds {
+		parser := gofeed.NewParser()
+		feed, err := parser.ParseURL(uri.String())
+		die(err)
+		pp.Println(feed)
+	}
+
+	time.Sleep(time.Minute * 10)
 }
