@@ -9,11 +9,13 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/k0kubun/pp"
 	"github.com/mmcdole/gofeed"
 )
 
-var feeds []*url.URL
+var (
+	uris  []string
+	feeds []*gofeed.Feed
+)
 
 func main() {
 	usr, err := user.Current()
@@ -25,7 +27,7 @@ func main() {
 	for scanner.Scan() {
 		uri, err := url.Parse(scanner.Text())
 		dieMsgIf(err, "invalid url: %s", scanner.Text())
-		feeds = append(feeds, uri)
+		uris = append(feeds, uri)
 	}
 	die(scanner.Err())
 
@@ -52,12 +54,14 @@ func dieMsgIf(err error, format string, args ...interface{}) {
 }
 
 func update() {
-	for _, uri := range feeds {
+	var tmpFeeds []*gofeed.Feed
+	for _, uri := range uris {
 		parser := gofeed.NewParser()
 		feed, err := parser.ParseURL(uri.String())
 		die(err)
-		pp.Println(feed)
+		tmpFeeds = append(tmpFeeds, feed)
 	}
+	feeds = tmpFeeds
 
 	time.Sleep(time.Minute * 10)
 }
