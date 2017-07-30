@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"os/signal"
 	"os/user"
 	"path/filepath"
+	"syscall"
 	"time"
 
 	"github.com/mmcdole/gofeed"
@@ -31,9 +33,15 @@ func main() {
 	}
 	die(scanner.Err())
 
-	for {
-		update()
-	}
+	go func() {
+		for {
+			update()
+		}
+	}()
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, syscall.SIGINT, syscall.SIGTERM)
+	<-interrupt
 }
 
 func die(err error) {
