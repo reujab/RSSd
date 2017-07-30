@@ -18,8 +18,8 @@ var feeds []*url.URL
 func main() {
 	usr, err := user.Current()
 	die(err)
-	file, err := os.Open(filepath.Join(usr.HomeDir, ".config/feeds"))
-	dieMsgIf(err, "no configuration found (~/.config/feeds)")
+	file, err := os.Open(filepath.Join(usr.HomeDir, ".config/rssd/feeds"))
+	dieMsgIf(err, "no configuration found (~/.config/rssd/feeds)")
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
