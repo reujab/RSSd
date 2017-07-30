@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/url"
 	"os"
 	"os/signal"
@@ -44,6 +45,19 @@ func main() {
 		for {
 			update()
 			time.Sleep(time.Minute * 10)
+		}
+	}()
+
+	sock, err := net.Listen("unix", filepath.Join(usr.HomeDir, ".local/share/rssd.sock"))
+	die(err)
+	defer func() { sock.Close() }()
+	go func() {
+		for {
+			conn, err := sock.Accept()
+			die(err)
+			defer func() { die(conn.Close()) }()
+
+			// TODO
 		}
 	}()
 
