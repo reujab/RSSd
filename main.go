@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"os"
@@ -17,6 +18,7 @@ import (
 var (
 	uris  []*url.URL
 	feeds []*gofeed.Feed
+	read  []string
 )
 
 func main() {
@@ -32,6 +34,11 @@ func main() {
 		uris = append(uris, uri)
 	}
 	die(scanner.Err())
+
+	file, err = os.Open(filepath.Join(usr.HomeDir, ".config/rssd/read"))
+	if err == nil {
+		die(json.NewDecoder(file).Decode(&read))
+	}
 
 	go func() {
 		for {
