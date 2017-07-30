@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	uris  []string
+	uris  []*url.URL
 	feeds []*gofeed.Feed
 )
 
@@ -27,7 +27,7 @@ func main() {
 	for scanner.Scan() {
 		uri, err := url.Parse(scanner.Text())
 		dieMsgIf(err, "invalid url: %s", scanner.Text())
-		uris = append(feeds, uri)
+		uris = append(uris, uri)
 	}
 	die(scanner.Err())
 
