@@ -43,6 +43,7 @@ func main() {
 	go func() {
 		for {
 			update()
+			time.Sleep(time.Minute * 10)
 		}
 	}()
 
@@ -77,6 +78,4 @@ func update() {
 		tmpFeeds = append(tmpFeeds, feed)
 	}
 	feeds = tmpFeeds
-
-	time.Sleep(time.Minute * 10)
 }
