@@ -66,9 +66,18 @@ func main() {
 	<-interrupt
 }
 
-func die(err error) {
-	if err != nil {
-		panic(err)
+func die(args ...interface{}) {
+	switch len(args) {
+	case 0:
+		os.Exit(1)
+	case 1:
+		if args[0] != nil {
+			panic(args[0])
+		}
+	case 2:
+		if args[0] != nil {
+			panic(args[1])
+		}
 	}
 }
 
