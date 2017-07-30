@@ -14,6 +14,7 @@ func main() {
 	app.Usage = "an RSSd client"
 	app.HideHelp = true
 	app.HideVersion = true
+	app.Action = list
 	app.Run(os.Args)
 }
 

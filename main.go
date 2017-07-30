@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed"
+	"github.com/reujab/RSSd/commands"
 )
 
 var (
@@ -57,7 +58,16 @@ func main() {
 			die(err)
 			defer func() { die(conn.Close()) }()
 
-			// TODO
+			reader := bufio.NewReader(conn)
+			command, err := reader.ReadByte()
+			die(err)
+
+			switch command {
+			case commands.List:
+				fmt.Println("requested list")
+			default:
+				die("unknown command")
+			}
 		}
 	}()
 
