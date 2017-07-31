@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"fmt"
 	"net"
 	"net/url"
 	"os"
@@ -18,9 +17,10 @@ import (
 )
 
 var (
-	uris  []*url.URL
-	feeds []*gofeed.Feed
-	read  []string
+	uris   []*url.URL
+	feeds  []*gofeed.Feed
+	read   []string
+	unread []commands.ListItem
 )
 
 func main() {
@@ -64,7 +64,7 @@ func main() {
 
 			switch command {
 			case commands.List:
-				fmt.Println("requested list")
+				die(json.NewEncoder(conn).Encode(unread))
 			default:
 				die("unknown command")
 			}
@@ -92,6 +92,7 @@ func die(args ...interface{}) {
 }
 
 func update() {
+	// update feeds
 	var tmpFeeds []*gofeed.Feed
 	for _, uri := range uris {
 		parser := gofeed.NewParser()
@@ -100,4 +101,25 @@ func update() {
 		tmpFeeds = append(tmpFeeds, feed)
 	}
 	feeds = tmpFeeds
+
+	// update unread articles
+	var tmpUnread []commands.ListItem
+	for _, feed := range feeds {
+	itemLoop:
+		for _, item := range feed.Items {
+			// check if item has already been read
+			for _, guid := range read {
+				if guid == item.GUID {
+					continue itemLoop
+				}
+			}
+
+			// item hasn't been read
+			tmpUnread = append(tmpUnread, commands.ListItem{
+				Name:  feed.Title,
+				Title: item.Title,
+			})
+		}
+	}
+	unread = tmpUnread
 }
