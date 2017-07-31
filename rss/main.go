@@ -27,7 +27,7 @@ func main() {
 			die("too many arguments")
 		}
 	}
-	app.Run(os.Args)
+	die(app.Run(os.Args))
 }
 
 func die(args ...interface{}) {

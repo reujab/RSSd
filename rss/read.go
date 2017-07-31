@@ -13,10 +13,10 @@ func read(index uint16) {
 	conn := connect()
 	conn.Write([]byte{commands.Read})
 
-	binary.Write(conn, binary.BigEndian, index)
+	die(binary.Write(conn, binary.BigEndian, index))
 
 	var uri string
-	json.NewDecoder(conn).Decode(&uri)
+	die(json.NewDecoder(conn).Decode(&uri))
 	if uri == "" {
 		die("index out of bounds")
 	}

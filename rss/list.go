@@ -14,7 +14,7 @@ func list() {
 	conn.Write([]byte{commands.List})
 
 	var items []commands.ListItem
-	json.NewDecoder(conn).Decode(&items)
+	die(json.NewDecoder(conn).Decode(&items))
 
 	lengths := make([]int, 2)
 	for i, item := range items {

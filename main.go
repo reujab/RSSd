@@ -52,7 +52,7 @@ func main() {
 
 	sock, err := net.Listen("unix", filepath.Join(usr.HomeDir, ".local/share/rssd.sock"))
 	die(err)
-	defer func() { sock.Close() }()
+	defer func() { die(sock.Close()) }()
 	go func() {
 		for {
 			conn, err := sock.Accept()
@@ -67,10 +67,10 @@ func main() {
 				die(json.NewEncoder(conn).Encode(unread))
 			case commands.Read:
 				var index uint16
-				binary.Read(reader, binary.BigEndian, &index)
+				die(binary.Read(reader, binary.BigEndian, &index))
 				if int(index) < len(unread) {
 					item := unread[index]
-					json.NewEncoder(conn).Encode(item.URL)
+					die(json.NewEncoder(conn).Encode(item.URL))
 					unread = append(unread[:index], unread[index+1:]...)
 				}
 			default:
