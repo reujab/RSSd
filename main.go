@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"encoding/binary"
 	"encoding/json"
+	"fmt"
+	"log"
 	"net"
 	"net/url"
 	"os"
@@ -111,11 +113,13 @@ func update() {
 	// update feeds
 	var tmpFeeds []*gofeed.Feed
 	for _, uri := range uris {
+		log.Printf("Updating %s...\n", uri)
 		parser := gofeed.NewParser()
 		feed, err := parser.ParseURL(uri.String())
 		die(err)
 		tmpFeeds = append(tmpFeeds, feed)
 	}
+	fmt.Println()
 	feeds = tmpFeeds
 
 	// update unread articles
