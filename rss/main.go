@@ -15,6 +15,13 @@ func main() {
 	app.Usage = "an RSSd client"
 	app.HideHelp = true
 	app.HideVersion = true
+	app.Commands = []cli.Command{
+		{
+			Name:   "read-all",
+			Usage:  "marks all items as read",
+			Action: readAll,
+		},
+	}
 	app.Action = func(ctx *cli.Context) {
 		switch len(ctx.Args()) {
 		case 0:
