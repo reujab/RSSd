@@ -7,10 +7,9 @@ import (
 	"strings"
 
 	"github.com/reujab/RSSd/commands"
-	"github.com/urfave/cli"
 )
 
-func list(ctx *cli.Context) {
+func list() {
 	conn := connect()
 	conn.Write([]byte{commands.List})
 

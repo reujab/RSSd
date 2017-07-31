@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/binary"
 	"encoding/json"
 	"net"
 	"net/url"
@@ -64,6 +65,14 @@ func main() {
 			switch command {
 			case commands.List:
 				die(json.NewEncoder(conn).Encode(unread))
+			case commands.Read:
+				var index uint16
+				binary.Read(reader, binary.BigEndian, &index)
+				if int(index) < len(unread) {
+					item := unread[index]
+					json.NewEncoder(conn).Encode(item.URL)
+					unread = append(unread[:index], unread[index+1:]...)
+				}
 			default:
 				die("unknown command")
 			}
@@ -119,6 +128,7 @@ func update() {
 			tmpUnread = append(tmpUnread, commands.ListItem{
 				Name:  feed.Title,
 				Title: item.Title,
+				URL:   item.Link,
 			})
 		}
 	}

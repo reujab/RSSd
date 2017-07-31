@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"strconv"
 
 	"github.com/urfave/cli"
 )
@@ -14,7 +15,18 @@ func main() {
 	app.Usage = "an RSSd client"
 	app.HideHelp = true
 	app.HideVersion = true
-	app.Action = list
+	app.Action = func(ctx *cli.Context) {
+		switch len(ctx.Args()) {
+		case 0:
+			list()
+		case 1:
+			index, err := strconv.ParseUint(ctx.Args()[0], 10, 16)
+			die(err, "invalid index")
+			read(uint16(index) - 1)
+		default:
+			die("too many arguments")
+		}
+	}
 	app.Run(os.Args)
 }
 
