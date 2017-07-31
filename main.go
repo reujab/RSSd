@@ -27,12 +27,12 @@ func main() {
 	usr, err := user.Current()
 	die(err)
 	file, err := os.Open(filepath.Join(usr.HomeDir, ".config/rssd/feeds"))
-	dieMsgIf(err, "no configuration found (~/.config/rssd/feeds)")
+	die(err, "no configuration found (~/.config/rssd/feeds)")
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		uri, err := url.Parse(scanner.Text())
-		dieMsgIf(err, "invalid url: %s", scanner.Text())
+		die(err, "invalid url: %s", scanner.Text())
 		uris = append(uris, uri)
 	}
 	die(scanner.Err())
@@ -88,17 +88,6 @@ func die(args ...interface{}) {
 		if args[0] != nil {
 			panic(args[1])
 		}
-	}
-}
-
-func dieMsg(format string, args ...interface{}) {
-	fmt.Fprintf(os.Stderr, format+"\n", args...)
-	os.Exit(1)
-}
-
-func dieMsgIf(err error, format string, args ...interface{}) {
-	if err != nil {
-		dieMsg(format, args...)
 	}
 }
 
