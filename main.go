@@ -72,6 +72,12 @@ func main() {
 					item := unread[index]
 					die(json.NewEncoder(conn).Encode(item.URL))
 					unread = append(unread[:index], unread[index+1:]...)
+					read = append(read, item.GUID)
+
+					// save read GUIDs
+					file, err := os.OpenFile(filepath.Join(usr.HomeDir, ".config/rssd/read"), os.O_WRONLY|os.O_CREATE, 0644)
+					die(err)
+					die(json.NewEncoder(file).Encode(read))
 				}
 			default:
 				die("unknown command")
@@ -126,6 +132,7 @@ func update() {
 
 			// item hasn't been read
 			tmpUnread = append(tmpUnread, commands.ListItem{
+				GUID:  item.GUID,
 				Name:  feed.Title,
 				Title: item.Title,
 				URL:   item.Link,
