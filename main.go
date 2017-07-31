@@ -56,7 +56,6 @@ func main() {
 		for {
 			conn, err := sock.Accept()
 			die(err)
-			defer func() { die(conn.Close()) }()
 
 			reader := bufio.NewReader(conn)
 			command, err := reader.ReadByte()
@@ -68,6 +67,8 @@ func main() {
 			default:
 				die("unknown command")
 			}
+
+			die(conn.Close())
 		}
 	}()
 
