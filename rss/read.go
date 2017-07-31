@@ -16,8 +16,8 @@ func read(index uint16) {
 	die(binary.Write(conn, binary.BigEndian, index))
 
 	var uri string
-	die(json.NewDecoder(conn).Decode(&uri))
-	if uri == "" {
+	err := json.NewDecoder(conn).Decode(&uri)
+	if err != nil {
 		die("index out of bounds")
 	}
 
