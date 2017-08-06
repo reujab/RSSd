@@ -113,11 +113,15 @@ func update() {
 	// update feeds
 	var tmpFeeds []*gofeed.Feed
 	for _, uri := range uris {
-		log.Printf("Updating %s...\n", uri)
-		parser := gofeed.NewParser()
-		feed, err := parser.ParseURL(uri.String())
-		die(err)
-		tmpFeeds = append(tmpFeeds, feed)
+		for i := 0; i < 3; i++ {
+			log.Printf("Updating %s...\n", uri)
+			parser := gofeed.NewParser()
+			feed, err := parser.ParseURL(uri.String())
+			if err == nil {
+				tmpFeeds = append(tmpFeeds, feed)
+				break
+			}
+		}
 	}
 	fmt.Println()
 	feeds = tmpFeeds
