@@ -17,6 +17,11 @@ func main() {
 	app.HideVersion = true
 	app.Commands = []cli.Command{
 		{
+			Name:   "mark",
+			Usage:  "marks items as read",
+			Action: mark,
+		},
+		{
 			Name:   "read-all",
 			Usage:  "marks all items as read",
 			Action: readAll,
