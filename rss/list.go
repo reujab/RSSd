@@ -19,7 +19,7 @@ func list() {
 	lengths := make([]int, 2)
 	for i, item := range items {
 		if len(item.Name) > lengths[1] {
-			lengths[1] = len(item.Name)
+			lengths[1] = len([]rune(item.Name))
 		}
 
 		lengths[0] = len(strconv.Itoa(i + 1))
@@ -32,7 +32,7 @@ func list() {
 		line += strings.Repeat(" ", lengths[0]-len(strconv.Itoa(i+1))) + "  "
 
 		line += item.Name
-		line += strings.Repeat(" ", lengths[1]-len(item.Name)) + "  "
+		line += strings.Repeat(" ", lengths[1]-len([]rune(item.Name))) + "  "
 
 		line += item.Title
 
